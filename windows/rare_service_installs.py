@@ -15,7 +15,8 @@ class RareServiceInstalls(Rule):
 
     def rule(self, e):
         count = self.stats.windowed("7d").get('count', 'winlog.event_data.ServiceFileName')
-        if count is not None and count < 5:
+        if count is not None and count < 5 and not \
+                deep_get(e, "winlog", "event_data", "ServiceFileName").endswith("MpKslDrv.sys"):
             if deep_get(e, 'winlog', 'event_id') in [7045]:
                 return True
         return False
