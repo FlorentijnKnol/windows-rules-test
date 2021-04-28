@@ -13,11 +13,12 @@ class DNSCat2PowershellImplementationDetectionViaProcessCreation(Rule):
     level = "high"
 
     def rule(self, e):
-        count = self.stats.groupby('ParentImage').get('count', 'winlog.event_data.Image')
-        if count is not None and count > 100:
-            if list(filter(deep_get(e, 'winlog', 'event_data', 'CommandLine', default="").endswith, ['\\nslookup.exe'])):
-                if list(filter(deep_get(e, 'winlog', 'event_data', 'Image', default="").endswith, ['\\nslookup.exe'])):
-                    if list(filter(deep_get(e, 'winlog', 'event_data', 'ParentImage', default="").endswith, ['\\powershell.exe'])):
-                        return True
-        return False
+        def filter_fn(e):
+            commline = deep_get(e, 'winlog', 'event_data', 'CommandLine', default="")
+            image = deep_get(e, 'winlog', 'event_data', 'Image', default="")
+            parent_image = deep_get(e, 'winlog', 'event_data', 'Image', default="")
+            return (commline.endswith('\\nslookup.exe') or image.endswith('\\nslookup.exe') and
+                parent_image.endswith('\\powershell.exe'))
+        count = self.stats.filter(id="nslookup_psl", filter_function=filter_fn).window("1d").get("total_count")
+        return count > 100
 

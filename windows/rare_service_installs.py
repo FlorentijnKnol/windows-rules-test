@@ -12,7 +12,7 @@ class RareServiceInstalls(Rule):
     level = "low"
 
     def rule(self, e):
-        count = self.stats.get('count', 'winlog.event_data.ServiceFileName')
+        count = self.stats.windowed("7d").get('count', 'winlog.event_data.ServiceFileName')
         if count is not None and count < 5:
             if deep_get(e, 'winlog', 'event_id') in [7045]:
                 return True
