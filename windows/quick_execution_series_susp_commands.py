@@ -52,7 +52,7 @@ class QuickExecutionofaSeriesofSuspiciousCommands(Rule):
     level = "low"
 
     def rule(self, e):
-        count = self.stats.get('count', 'winlog.event_data.MachineName')
+        count = self.stats.groupby('count', 'winlog.event_data.MachineName')
         if count is not None and count > 5:
             if deep_get(e, 'winlog', 'event_data', 'Commandline') in SUSP_COMMANDS:
                 return True

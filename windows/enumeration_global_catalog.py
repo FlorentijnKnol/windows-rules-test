@@ -11,7 +11,7 @@ class EnumerationviatheGlobalCatalog(Rule):
     level = "medium"
 
     def rule(self, e):
-        count = self.stats.get('count', 'winlog.event_data.SourceAddress')
+        count = self.stats.get('count', 'source.ip')
         if count is not None and count > 2000:
             if deep_get(e, 'winlog', 'event_data', 'DestinationPort') in [3268, 3269]:
                 if deep_get(e, 'winlog', 'event_id') in [5156]:

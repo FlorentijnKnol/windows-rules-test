@@ -14,7 +14,7 @@ class RareScheduledTaskCreations(Rule):
     def rule(self, e):
         count = self.stats.get('count', 'winlog.event_data.TaskName')
         if count is not None and count < 5:
-            if deep_get(e, 'winlog', 'event_id'] in [106]:
+            if deep_get(e, ['winlog', 'event_id']) in [106]:
                 return True
         return False
 
