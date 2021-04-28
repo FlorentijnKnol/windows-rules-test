@@ -1,4 +1,5 @@
-from python_rules import Rule
+from python_rules import Rule, deep_get
+
 
 class RareSchtasksCreations(Rule):
     id = "b0d77106-7bb0-41fe-bd94-d1752164d066"
@@ -13,6 +14,6 @@ class RareSchtasksCreations(Rule):
     def rule(self, e):
         count = self.stats.get('count', 'winlog.event_data.TaskName')
         if count is not None and count < 5:
-            if e['winlog.event_id'] in [4698]:
+            if deep_get(e, 'winlog', 'event_id') in [4698]:
                 return True
         return False

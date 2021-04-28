@@ -1,4 +1,5 @@
-from python_rules import Rule
+from python_rules import Rule, deep_get
+
 
 class RareServiceInstalls(Rule):
     id = "66bfef30-22a5-4fcd-ad44-8d81e60922ae"
@@ -13,6 +14,6 @@ class RareServiceInstalls(Rule):
     def rule(self, e):
         count = self.stats.get('count', 'winlog.event_data.ServiceFileName')
         if count is not None and count < 5:
-            if e['winlog.event_id'] in [7045]:
+            if deep_get(e, 'winlog', 'event_id') in [7045]:
                 return True
         return False

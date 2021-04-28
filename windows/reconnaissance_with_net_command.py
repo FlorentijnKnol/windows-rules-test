@@ -1,4 +1,24 @@
-from python_rules import Rule
+from python_rules import Rule, deep_get
+
+RECON_ACTIVITY = {'tasklist',
+                  'net time',
+                  'systeminfo',
+                  'whoami',
+                  'nbtstat',
+                  'net start',
+                  '*\\net1 start',
+                  'qprocess',
+                  'nslookup',
+                  'hostname.exe',
+                  '*\\net1 user /domain',
+                  '*\\net1 group /domain',
+                  '*\\net1 group "domain admins" /domain',
+                  '*\\net1 group "Exchange Trusted Subsystem" /domain',
+                  '*\\net1 accounts /domain',
+                  '*\\net1 user net localgroup administrators',
+                  'netstat -an'
+                  }
+
 
 class ReconnaissanceActivitywithNetCommand(Rule):
     id = "2887e914-ce96-435f-8105-593937e90757"
@@ -14,6 +34,6 @@ class ReconnaissanceActivitywithNetCommand(Rule):
     def rule(self, e):
         count = self.stats.get('count', 'winlog.event_data.CommandLine')
         if count is not None and count > 4:
-            if e['winlog.event_data.CommandLine'] in ['tasklist', 'net time', 'systeminfo', 'whoami', 'nbtstat', 'net start', '*\\net1 start', 'qprocess', 'nslookup', 'hostname.exe', '*\\net1 user /domain', '*\\net1 group /domain', '*\\net1 group "domain admins" /domain', '*\\net1 group "Exchange Trusted Subsystem" /domain', '*\\net1 accounts /domain', '*\\net1 user net localgroup administrators', 'netstat -an']:
+            if deep_get(e, 'winlog', 'event_data', 'CommandLine') in RECON_ACTIVITY:
                 return True
         return False

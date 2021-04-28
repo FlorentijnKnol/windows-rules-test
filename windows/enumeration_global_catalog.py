@@ -1,4 +1,5 @@
-from python_rules import Rule
+from python_rules import Rule, deep_get
+
 
 class EnumerationviatheGlobalCatalog(Rule):
     id = "619b020f-0fd7-4f23-87db-3f51ef837a34"
@@ -12,7 +13,7 @@ class EnumerationviatheGlobalCatalog(Rule):
     def rule(self, e):
         count = self.stats.get('count', 'winlog.event_data.SourceAddress')
         if count is not None and count > 2000:
-            if e['winlog.event_data.DestinationPort'] in [3268, 3269]:
-                if e['winlog.event_id'] in [5156]:
+            if deep_get(e, 'winlog', 'event_data', 'DestinationPort') in [3268, 3269]:
+                if deep_get(e, 'winlog', 'event_id') in [5156]:
                     return True
         return False
