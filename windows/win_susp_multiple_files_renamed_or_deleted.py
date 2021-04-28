@@ -17,7 +17,7 @@ class SuspiciousMultipleFileRenameOrDeleteOccurred(Rule):
 
         def filter_fn(ev):
             try:
-                return nest_get(ev, 'winlog.event_data', 'AccessList') in ['%%1537'] and \
+                return nest_get(ev, 'winlog.event_data.AccessList') in ['%%1537'] and \
                        nest_get(ev, 'winlog.event_id') in [4663] and \
                        nest_get(ev, 'winlog.event_data.Keywords') in ['0x8020000000000000'] and \
                        nest_get(ev, 'winlog.event_data.ObjectType') in ['File']
