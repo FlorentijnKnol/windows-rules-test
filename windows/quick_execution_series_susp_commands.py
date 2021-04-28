@@ -52,6 +52,10 @@ class QuickExecutionofaSeriesofSuspiciousCommands(Rule):
     level = "low"
 
     def rule(self, e):
-        filter_fn = lambda ev: nest_get(ev, 'winlog.event_data.Commandline') in SUSP_COMMANDS
+        def filter_fn(ev):
+            try:
+                return nest_get(ev, 'winlog.event_data.Commandline') in SUSP_COMMANDS
+            except KeyError:
+                return False
         count = self.stats.filter(filter_id="quickexsusp", filter_function=filter_fn).windowed("30m").get("total_count")
         return count is not None and count > 5 and filter_fn(e)

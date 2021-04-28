@@ -16,10 +16,13 @@ class SuspiciousMultipleFileRenameOrDeleteOccurred(Rule):
     def rule(self, e):
 
         def filter_fn(ev):
-            return nest_get(ev, 'winlog.event_data', 'AccessList') in ['%%1537'] and \
-                   nest_get(ev, 'winlog.event_id') in [4663] and \
-                   nest_get(ev, 'winlog.event_data.Keywords') in ['0x8020000000000000'] and \
-                   nest_get(ev, 'winlog.event_data.ObjectType') in ['File']
+            try:
+                return nest_get(ev, 'winlog.event_data', 'AccessList') in ['%%1537'] and \
+                       nest_get(ev, 'winlog.event_id') in [4663] and \
+                       nest_get(ev, 'winlog.event_data.Keywords') in ['0x8020000000000000'] and \
+                       nest_get(ev, 'winlog.event_data.ObjectType') in ['File']
+            except KeyError:
+                return False
 
         count = self.stats.filter(filter_id="supsmultidelete",
                                   filter_function=filter_fn).windowed("1m").get('count',
