@@ -32,7 +32,7 @@ class ReconnaissanceActivitywithNetCommand(Rule):
     level = "medium"
 
     def rule(self, e):
-        filter_fn = lambda e: deep_get(e, 'winlog', 'event_data', 'CommandLine') in RECON_ACTIVITY
+        filter_fn = lambda ev: deep_get(ev, 'winlog', 'event_data', 'CommandLine') in RECON_ACTIVITY
         count = self.stats.filter(filter_id="recon_filter", filter_function=filter_fn).windowed("1H").get('total_count')
         if count is not None and count > 4:
             if deep_get(e, 'winlog', 'event_data', 'CommandLine') in RECON_ACTIVITY:

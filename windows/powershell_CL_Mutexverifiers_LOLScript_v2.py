@@ -16,7 +16,8 @@ class ExecutionviaCLMutexverifiersps12Lines(Rule):
         count = self.stats.groupby('winlog.computer_name').get('count', 'winlog.event_data.ScriptBlockText')
         if count is not None and count > 2:
             if deep_get(e, 'winlog', 'event_id') in [4104]:
-                if list(filter(lambda x: x in deep_get(e, 'winlog', 'event_data', 'ScriptBlockText'), ['CL_Mutexverifiers.ps1', 'runAfterCancelProcess'])):
+                if list(filter(lambda x: x in deep_get(e, 'winlog', 'event_data', 'ScriptBlockText'),
+                               ['CL_Mutexverifiers.ps1', 'runAfterCancelProcess'])):
                     return True
         return False
 

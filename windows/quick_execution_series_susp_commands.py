@@ -1,4 +1,4 @@
-from python_rules import Rule, deep_get
+from python_rules import Rule, nest_get
 
 SUSP_COMMANDS = {'arp.exe',
                  'at.exe',
@@ -52,8 +52,6 @@ class QuickExecutionofaSeriesofSuspiciousCommands(Rule):
     level = "low"
 
     def rule(self, e):
-        count = self.stats.groupby('count', 'winlog.event_data.MachineName')
-        if count is not None and count > 5:
-            if deep_get(e, 'winlog', 'event_data', 'Commandline') in SUSP_COMMANDS:
-                return True
-        return False
+        filter_fn = lambda ev: nest_get(ev, 'winlog.event_data.Commandline') in SUSP_COMMANDS
+        count = self.stats.filter(filter_id="quickexsusp", filter_function=filter_fn).windowed("30m").get("total_count")
+        return count is not None and count > 5 and filter_fn(e)
