@@ -11,6 +11,8 @@ class RareSchtasksCreations(Rule):
     tags = ['attack.execution', 'attack.privilege_escalation', 'attack.persistence', 'attack.t1053', 'car.2013-08-001', 'attack.t1053.005']
     level = "low"
 
+    relation_fields = ['winlog.event_data.TaskName']
+
     def rule(self, e):
         count = self.stats.windowed("7d").get('count', 'winlog.event_data.TaskName')
         if count is not None and count < 5:

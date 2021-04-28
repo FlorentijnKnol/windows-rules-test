@@ -11,6 +11,8 @@ class RareScheduledTaskCreations(Rule):
     tags = ['attack.persistence', 'attack.t1053', 'attack.s0111', 'attack.t1053.005']
     level = "low"
 
+    relation_fields = ['winlog.event_data.TaskName']
+
     def rule(self, e):
         count = self.stats.get('count', 'winlog.event_data.TaskName')
         if count is not None and count < 5:

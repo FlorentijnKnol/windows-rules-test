@@ -11,6 +11,8 @@ class RareServiceInstalls(Rule):
     tags = ['attack.persistence', 'attack.privilege_escalation', 'attack.t1050', 'car.2013-09-005', 'attack.t1543.003']
     level = "low"
 
+    relation_fields = ["winlog.event_data.ServiceFileName"]
+
     def rule(self, e):
         count = self.stats.windowed("7d").get('count', 'winlog.event_data.ServiceFileName')
         if count is not None and count < 5:

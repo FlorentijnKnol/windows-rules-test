@@ -13,6 +13,9 @@ class SuspiciousMultipleFileRenameOrDeleteOccurred(Rule):
     references = ['https://www.manageengine.com/data-security/how-to/how-to-detect-ransomware-attacks.html']
     level = "medium"
 
+    relation_fields = ["winlog.event_data.SubjectLogonId"]
+    relation_period = 60
+
     def rule(self, e):
 
         def filter_fn(ev):

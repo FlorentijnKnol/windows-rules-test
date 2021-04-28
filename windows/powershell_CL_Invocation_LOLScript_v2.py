@@ -12,10 +12,12 @@ class ExecutionviaCLInvocationps12Lines(Rule):
     references = ['https://github.com/LOLBAS-Project/LOLBAS/blob/master/yml/OSScripts/Cl_invocation.yml', 'https://twitter.com/bohops/status/948061991012327424']
     level = "high"
 
+    relation_fields = ["winlog.computer_name"]
+
     def rule(self, e):
         count = self.stats.groupby('winlog.computer_name').get('count', 'winlog.event_data.ScriptBlockText')
         if count is not None and count > 2:
-            if deep_get(e, 'winlog', 'event_id')in [4104]:
+            if deep_get(e, 'winlog', 'event_id') in [4104]:
                 if list(filter(lambda x: x in deep_get(e, 'winlog', 'event_data', 'ScriptBlockText'),
                                ['CL_Invocation.ps1', 'SyncInvoke'])):
                     return True

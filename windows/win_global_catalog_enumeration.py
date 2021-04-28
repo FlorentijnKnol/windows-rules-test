@@ -10,6 +10,8 @@ class EnumerationviatheGlobalCatalog(Rule):
     tags = ['attack.discovery', 'attack.t1087', 'attack.t1087.002']
     level = "medium"
 
+    relation_fields = ["source.ip"]
+
     def rule(self, e):
         count = self.stats.windowed("1H").get('count', 'source.ip')
         if count is not None and count > 2000:
