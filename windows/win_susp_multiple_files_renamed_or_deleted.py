@@ -22,9 +22,9 @@ class SuspiciousMultipleFileRenameOrDeleteOccurred(Rule):
                    nest_get(e, 'winlog.event_data.ObjectType') in ['File']
 
         if __name__ == '__main__':
-            count = self.stats.filter(id="supsmultidelete", filter_function=filter_fn).windowed("30s").get('count',
-                                                                                            'winlog.event_data'
-                                                                                            '.SubjectLogonId')
+            count = self.stats.filter(filter_id="supsmultidelete",
+                                      filter_function=filter_fn).windowed("30s").get('count',
+                                                                                     'winlog.event_data.SubjectLogonId')
         if count is not None and count > 10:
             return False
 
